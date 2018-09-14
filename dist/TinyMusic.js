@@ -158,12 +158,14 @@ constantOneCurve[1] = 1;
  * Creates a pulse oscillator. Borrowed from this article: https://github.com/pendragon-andyh/WebAudio-PulseOscillator
  */
 Sequence.prototype.createPulseOscillator = function () {
+  this.stop();
   // Wave type must be sawtooth
+  // debugger;
   this.waveType = 'sawtooth';
 
-  this.createOscillator();
+  // this.createOscillator();
   // Use the sequence's oscillator as the basis of our new oscillator.
-  var node = this.osc;
+  var node = this.ac.createOscillator();
   node.type = this.waveType;
 
   // Shape the output into a pulse wave.
@@ -173,7 +175,7 @@ Sequence.prototype.createPulseOscillator = function () {
 
   // Use a GainNode as our new "width" audio parameter.
   var widthGain = this.gain;
-  widthGain.gain.value = 0; // Default width.
+  // widthGain.gain.value = 0; // Default width.
   node.width = widthGain.gain; // Add parameter to oscillator node.
   widthGain.connect(pulseShaper);
 
@@ -192,6 +194,8 @@ Sequence.prototype.createPulseOscillator = function () {
   node.disconnect = function () {
     pulseShaper.disconnect.apply(pulseShaper, arguments);
   };
+  this.osc = node;
+  this.osc.connect(this.gain);
 };
 
 // schedules this.notes[ index ] to play at the given time
@@ -246,7 +250,12 @@ Sequence.prototype.rampFrequency = function (freq, when) {
 Sequence.prototype.play = function (when) {
   when = typeof when === 'number' ? when : this.ac.currentTime;
 
-  this.createOscillator();
+  if (this.waveType === 'pulse') {
+    this.createPulseOscillator();
+  } else {
+    this.createOscillator();
+  }
+
   this.osc.start(when);
 
   this.notes.forEach(function (note, i) {
