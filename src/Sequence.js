@@ -178,13 +178,10 @@ Sequence.prototype.createPulseOscillator = function () {
   // var gainNode = this.ac.createGain();
   // gainNode.gain.value = this.gain.gain.value;
   // gainNode.connect(this.ac.destination);
-
   node.connect(this.gain);
 
   node.width = this.pulseWidth; // Add parameter to oscillator node.
 
-  // Pass a constant value of 1 into the widthGain – so the "width" setting
-  // is duplicated to its output.
   var constantOneShaper = this.ac.createWaveShaper();
   constantOneShaper.curve = constantOneCurve;
   node.connect(constantOneShaper);
