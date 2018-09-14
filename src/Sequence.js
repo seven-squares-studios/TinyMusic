@@ -86,7 +86,7 @@ for (var i = 0; i < 128; i++) {
   pulseCurve[i] = -1;
   pulseCurve[i + 128] = 1;
 }
-var constantOneCurve = new Float32Array(2);
+var constantCurve = new Float32Array(2);
 constantCurve[0] = 0.5;
 constantCurve[1] = 0.5;
 
